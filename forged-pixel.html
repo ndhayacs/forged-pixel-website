@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forged Pixel — Build for yourself. Rise with everyone.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0b0705;
+    --char:#160d08;
+    --ember:#ff5a1f;
+    --ember-bright:#ff7d3c;
+    --gold:#f6a623;
+    --amber-glow:#ffb866;
+    --cream:#f7ede2;
+    --cream-dim:#cbb6a3;
+    --ash:#8a7a6c;
+    --steel:#2a1d15;
+    --line:rgba(247,237,226,.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--ink);
+    color:var(--cream);
+    font-family:'Bricolage Grotesque',sans-serif;
+    line-height:1.5;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--ember);color:var(--ink)}
+
+  /* grain overlay */
+  body::after{
+    content:"";
+    position:fixed;inset:0;pointer-events:none;z-index:200;opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:20px 28px;
+    backdrop-filter:blur(8px);
+    background:linear-gradient(to bottom,rgba(11,7,5,.9),rgba(11,7,5,0));
+    transition:background .3s;
+  }
+  .logo{
+    display:flex;align-items:center;gap:11px;
+    font-weight:800;font-size:1.15rem;letter-spacing:-.02em;
+    text-decoration:none;color:var(--cream);
+  }
+  .logo .mark{
+    width:30px;height:30px;position:relative;flex:none;
+  }
+  .logo .mark svg{display:block;width:100%;height:100%}
+  .nav-links{display:flex;gap:30px;align-items:center}
+  .nav-links a{
+    color:var(--cream-dim);text-decoration:none;font-size:.92rem;font-weight:600;
+    transition:color .2s;
+  }
+  .nav-links a:hover{color:var(--ember-bright)}
+  .nav-cta{
+    background:var(--ember);color:var(--ink)!important;
+    padding:9px 18px;border-radius:2px;font-weight:800;
+    transition:transform .15s,box-shadow .2s;
+    box-shadow:0 0 0 rgba(255,90,31,0);
+  }
+  .nav-cta:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(255,90,31,.4)}
+  @media(max-width:760px){.nav-links a:not(.nav-cta){display:none}}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;min-height:100vh;display:flex;align-items:center;
+    padding:140px 0 90px;overflow:hidden;
+  }
+  /* molten glow */
+  .hero::before{
+    content:"";position:absolute;z-index:0;
+    width:1100px;height:1100px;left:50%;top:-10%;transform:translateX(-50%);
+    background:radial-gradient(circle,rgba(255,90,31,.28) 0%,rgba(246,166,35,.10) 32%,transparent 62%);
+    filter:blur(20px);
+    animation:breathe 7s ease-in-out infinite;
+  }
+  @keyframes breathe{0%,100%{opacity:.85;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.06)}}
+  /* ember sparks */
+  .sparks{position:absolute;inset:0;z-index:1;pointer-events:none}
+  .spark{
+    position:absolute;bottom:-10px;width:3px;height:3px;border-radius:50%;
+    background:var(--gold);box-shadow:0 0 6px 1px var(--ember);
+    animation:rise linear infinite;opacity:0;
+  }
+  @keyframes rise{
+    0%{transform:translateY(0) translateX(0);opacity:0}
+    10%{opacity:1}
+    90%{opacity:.8}
+    100%{transform:translateY(-90vh) translateX(40px);opacity:0}
+  }
+  .hero-inner{position:relative;z-index:2;width:100%}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;font-size:.78rem;letter-spacing:.32em;
+    text-transform:uppercase;color:var(--gold);margin-bottom:26px;
+    display:inline-flex;align-items:center;gap:12px;
+    opacity:0;animation:fade .7s .1s forwards;
+  }
+  .eyebrow::before{content:"";width:34px;height:1px;background:var(--gold)}
+  h1{
+    font-family:'Fraunces',serif;font-weight:400;
+    font-size:clamp(2.9rem,8vw,6.4rem);line-height:.98;letter-spacing:-.02em;
+    margin-bottom:30px;max-width:14ch;
+  }
+  h1 .em{font-style:italic;color:var(--ember-bright)}
+  h1 span{display:block;opacity:0;animation:riseIn .8s forwards}
+  h1 span:nth-child(1){animation-delay:.15s}
+  h1 span:nth-child(2){animation-delay:.30s}
+  @keyframes riseIn{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fade{to{opacity:1}}
+  .lede{
+    font-size:clamp(1.05rem,2vw,1.3rem);color:var(--cream-dim);max-width:46ch;
+    margin-bottom:38px;line-height:1.55;
+    opacity:0;animation:fade .8s .55s forwards;
+  }
+  .lede b{color:var(--cream);font-weight:600}
+  .hero-cta{display:flex;gap:16px;flex-wrap:wrap;opacity:0;animation:fade .8s .75s forwards}
+  .btn{
+    font-family:'Bricolage Grotesque';font-weight:800;font-size:1rem;
+    padding:15px 30px;border-radius:2px;text-decoration:none;cursor:pointer;border:none;
+    transition:transform .15s,box-shadow .25s;display:inline-flex;align-items:center;gap:10px;
+  }
+  .btn-primary{background:var(--ember);color:var(--ink);box-shadow:0 0 30px rgba(255,90,31,.3)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 44px rgba(255,90,31,.5)}
+  .btn-ghost{background:transparent;color:var(--cream);border:1px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--ember);color:var(--ember-bright)}
+
+  /* ---------- MARQUEE ---------- */
+  .marquee{
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:20px 0;overflow:hidden;white-space:nowrap;background:var(--char);
+  }
+  .marquee-track{display:inline-block;animation:scroll 28s linear infinite}
+  .marquee span{
+    font-family:'Fraunces',serif;font-style:italic;font-size:1.5rem;color:var(--cream-dim);
+    margin:0 30px;
+  }
+  .marquee span b{color:var(--ember);font-style:normal;font-weight:600}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* ---------- SECTION SHELL ---------- */
+  section{position:relative}
+  .pad{padding:110px 0}
+  .sec-label{
+    font-family:'JetBrains Mono',monospace;font-size:.75rem;letter-spacing:.3em;
+    text-transform:uppercase;color:var(--gold);margin-bottom:18px;
+  }
+  .sec-title{
+    font-family:'Fraunces',serif;font-weight:400;
+    font-size:clamp(2rem,4.5vw,3.4rem);line-height:1.05;letter-spacing:-.02em;
+    margin-bottom:22px;max-width:18ch;
+  }
+  .sec-title .em{font-style:italic;color:var(--ember-bright)}
+
+  /* reveal on scroll */
+  .reveal{opacity:0;transform:translateY(34px);transition:opacity .7s,transform .7s}
+  .reveal.in{opacity:1;transform:none}
+
+  /* ---------- MANIFESTO ---------- */
+  .manifesto{background:var(--char);border-top:1px solid var(--line)}
+  .manifesto .wrap{max-width:880px}
+  .manifesto-quote{
+    font-family:'Fraunces',serif;font-weight:400;
+    font-size:clamp(1.9rem,4.6vw,3.2rem);line-height:1.12;letter-spacing:-.015em;
+    margin-bottom:34px;
+  }
+  .manifesto-quote .em{font-style:italic;color:var(--ember-bright)}
+  .manifesto p{font-size:1.12rem;color:var(--cream-dim);margin-bottom:22px;max-width:62ch;line-height:1.65}
+  .manifesto p b{color:var(--cream);font-weight:600}
+  .pull{
+    border-left:3px solid var(--ember);padding-left:24px;margin:40px 0;
+    font-family:'Fraunces',serif;font-style:italic;font-size:1.4rem;color:var(--cream);
+  }
+
+  /* ---------- WHY GRID ---------- */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}}
+  .cell{background:var(--ink);padding:42px 32px;transition:background .3s}
+  .cell:hover{background:var(--steel)}
+  .cell .ic{
+    width:46px;height:46px;margin-bottom:22px;color:var(--ember);
+  }
+  .cell h3{font-size:1.3rem;font-weight:800;margin-bottom:12px;letter-spacing:-.01em}
+  .cell p{color:var(--ash);font-size:1rem;line-height:1.6}
+
+  /* ---------- HOW STEPS ---------- */
+  .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:22px;margin-top:50px}
+  @media(max-width:920px){.steps{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.steps{grid-template-columns:1fr}}
+  .step{position:relative;padding-top:26px;border-top:2px solid var(--steel);transition:border-color .3s}
+  .step:hover{border-color:var(--ember)}
+  .step .n{
+    font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--gold);margin-bottom:14px;letter-spacing:.1em;
+  }
+  .step h4{font-size:1.18rem;font-weight:800;margin-bottom:8px}
+  .step p{color:var(--ash);font-size:.95rem;line-height:1.55}
+
+  /* ---------- LADDER ---------- */
+  .ladder{background:var(--char);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .rungs{margin-top:46px;display:flex;flex-direction:column;gap:2px}
+  .rung{
+    display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:20px;align-items:center;
+    padding:20px 26px;background:var(--ink);position:relative;overflow:hidden;
+    transition:transform .25s;
+  }
+  .rung::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:var(--w,10%);
+    background:linear-gradient(90deg,rgba(255,90,31,.22),rgba(255,90,31,0));
+    transition:width .8s ease;
+  }
+  .rung:hover{transform:translateX(6px)}
+  .rung .tier{font-family:'Fraunces',serif;font-style:italic;font-size:1.5rem;position:relative;z-index:1}
+  .rung .meta{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--cream-dim);position:relative;z-index:1}
+  .rung .rev{font-weight:800;color:var(--gold);position:relative;z-index:1;text-align:right}
+  @media(max-width:680px){
+    .rung{grid-template-columns:1fr 1fr;gap:8px}
+    .rung .meta{font-size:.75rem}
+    .rung .tier{font-size:1.2rem}
+  }
+
+  /* ---------- BELIEF / VALUES ---------- */
+  .belief .wrap{max-width:760px;text-align:center}
+  .belief .big{
+    font-family:'Fraunces',serif;font-size:clamp(2.1rem,5vw,3.6rem);line-height:1.1;
+    letter-spacing:-.02em;margin-bottom:30px;
+  }
+  .belief .big .em{font-style:italic;color:var(--ember-bright)}
+  .belief p{font-size:1.15rem;color:var(--cream-dim);line-height:1.65;margin-bottom:20px}
+  .tags{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:40px}
+  .tag{
+    font-family:'JetBrains Mono',monospace;font-size:.8rem;letter-spacing:.05em;
+    border:1px solid var(--line);padding:9px 16px;border-radius:99px;color:var(--cream-dim);
+    transition:.25s;
+  }
+  .tag:hover{border-color:var(--ember);color:var(--ember-bright);transform:translateY(-2px)}
+
+  /* ---------- CTA ---------- */
+  .final{position:relative;text-align:center;overflow:hidden}
+  .final::before{
+    content:"";position:absolute;left:50%;bottom:-40%;transform:translateX(-50%);
+    width:900px;height:900px;
+    background:radial-gradient(circle,rgba(255,90,31,.25),transparent 60%);
+    filter:blur(10px);
+  }
+  .final .wrap{position:relative;z-index:1;max-width:720px}
+  .final h2{
+    font-family:'Fraunces',serif;font-size:clamp(2.4rem,6vw,4.6rem);line-height:1;
+    letter-spacing:-.025em;margin-bottom:26px;
+  }
+  .final h2 .em{font-style:italic;color:var(--ember-bright)}
+  .final p{color:var(--cream-dim);font-size:1.2rem;margin-bottom:40px}
+
+  /* ---------- FOOTER ---------- */
+  footer{border-top:1px solid var(--line);padding:46px 0;background:var(--char)}
+  .foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+  .foot p{color:var(--ash);font-size:.88rem}
+  .foot .logo{font-size:1rem}
+  .tagfoot{font-family:'Fraunces',serif;font-style:italic;color:var(--cream-dim)}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="#top" class="logo">
+    <span class="mark">
+      <svg viewBox="0 0 32 32" fill="none">
+        <rect x="4" y="4" width="9" height="9" fill="#ff5a1f"/>
+        <rect x="14" y="4" width="9" height="9" fill="#f6a623"/>
+        <rect x="14" y="14" width="9" height="9" fill="#ff5a1f"/>
+        <rect x="4" y="14" width="9" height="9" fill="#7a4a2a"/>
+        <rect x="24" y="14" width="4" height="4" fill="#f6a623"/>
+        <rect x="24" y="24" width="4" height="4" fill="#ff5a1f"/>
+      </svg>
+    </span>
+    Forged Pixel
+  </a>
+  <div class="nav-links">
+    <a href="#why">Why us</a>
+    <a href="#how">How it works</a>
+    <a href="#ladder">The ladder</a>
+    <a href="#belief">What we believe</a>
+    <a href="#join" class="nav-cta">Join</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="sparks" id="sparks"></div>
+  <div class="wrap hero-inner">
+    <div class="eyebrow">A home for makers</div>
+    <h1>
+      <span>Build for <span class="em">yourself.</span></span>
+      <span>Rise with everyone.</span>
+    </h1>
+    <p class="lede">Forged Pixel is where developers, artists, writers, and designers build what they love — for themselves, not for someone else's fortune. <b>You bring the talent. We clear the path. You keep what you earn.</b></p>
+    <div class="hero-cta">
+      <a href="#join" class="btn btn-primary">Start building →</a>
+      <a href="#manifesto" class="btn btn-ghost">Read the manifesto</a>
+    </div>
+  </div>
+</header>
+
+<div class="marquee">
+  <div class="marquee-track">
+    <span>Your work. <b>Your wealth.</b> Your way.</span>
+    <span>No bosses. <b>No ceilings.</b> No fear.</span>
+    <span>Make what you love. <b>Keep what you earn.</b></span>
+    <span>Prosperity <b>wide,</b> not tall.</span>
+    <span>Your work. <b>Your wealth.</b> Your way.</span>
+    <span>No bosses. <b>No ceilings.</b> No fear.</span>
+    <span>Make what you love. <b>Keep what you earn.</b></span>
+    <span>Prosperity <b>wide,</b> not tall.</span>
+  </div>
+</div>
+
+<!-- MANIFESTO -->
+<section class="manifesto pad" id="manifesto">
+  <div class="wrap">
+    <div class="sec-label reveal">The Manifesto</div>
+    <div class="manifesto-quote reveal">We're done making <span class="em">billionaires.</span></div>
+    <p class="reveal">For too long, the deal has been simple and unfair: you bring the talent, you do the work, and someone at the top takes the fortune. You trade your freedom for a paycheck — and the constant fear that it could vanish tomorrow.</p>
+    <p class="reveal"><b>Forged Pixel is built on one belief: the people who make things should be the ones who prosper from them.</b> Not shareholders. Not absentee owners. Not a CEO making four hundred times what the creators do. You.</p>
+    <div class="pull reveal">You choose your projects. You choose your team. You decide how the rewards are shared. We don't own your work — and we can't fire you from your own dream.</div>
+    <p class="reveal">Getting wealthy is not the problem. <b>How</b> you get wealthy is. Money earned from your own work and talent — shared fairly with the people who built it beside you — is good and right. What we reject is wealth squeezed out of the labor of people kept powerless below you.</p>
+    <p class="reveal">So we built this differently, on purpose. Forged Pixel will never be sold off, never go public, never be hollowed out. It's locked to its mission — permanently. And as we succeed, our profits flow back out: into communities from Nairobi to Manila to the small town nobody's investing in, <b>so the next generation of creators gets the same shot you did.</b></p>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="pad" id="why">
+  <div class="wrap">
+    <div class="sec-label reveal">Why creators come here</div>
+    <h2 class="sec-title reveal">Everything you'd want from a studio — <span class="em">without the studio.</span></h2>
+    <div class="grid reveal">
+      <div class="cell">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v18M5 8l7-5 7 5"/><circle cx="12" cy="14" r="3"/></svg>
+        <h3>You choose the work</h3>
+        <p>No assigned projects. No building someone else's vision. You make what calls to you.</p>
+      </div>
+      <div class="cell">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        <h3>You can't be fired</h3>
+        <p>Your work is yours. There's no boss who can take your project away. Job security through ownership.</p>
+      </div>
+      <div class="cell">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg>
+        <h3>You keep what you earn</h3>
+        <p>A modest 20% to publish, operate and grow — never a controlling cut. The rest is yours, split how your team decides.</p>
+      </div>
+      <div class="cell">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <h3>Never alone in the grind</h3>
+        <p>Our AI-powered operator sets milestones and keeps your project moving — so ideas ship instead of stalling.</p>
+      </div>
+      <div class="cell">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20h16M7 20V9M12 20V4M17 20v-7"/></svg>
+        <h3>A real growth ladder</h3>
+        <p>From your first $2K project to a Triple-A team shipping worldwide — guided at every rung.</p>
+      </div>
+      <div class="cell">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+        <h3>Global from day one</h3>
+        <p>A brilliant maker in Nairobi gets the same shot as one in San Francisco. Talent is everywhere — now opportunity is too.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section class="pad" id="how" style="border-top:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-label reveal">How it works</div>
+    <h2 class="sec-title reveal">Five steps from idea <span class="em">to income.</span></h2>
+    <div class="steps">
+      <div class="step reveal"><div class="n">STEP 01</div><h4>Join</h4><p>Solo or as a team. Find collaborators by skill and need.</p></div>
+      <div class="step reveal"><div class="n">STEP 02</div><h4>Build</h4><p>Your project, your team, your split. We keep you on task.</p></div>
+      <div class="step reveal"><div class="n">STEP 03</div><h4>Ship</h4><p>We publish across major storefronts after a quick content review.</p></div>
+      <div class="step reveal"><div class="n">STEP 04</div><h4>Earn</h4><p>We collect and distribute revenue to your accounts — transparently.</p></div>
+      <div class="step reveal"><div class="n">STEP 05</div><h4>Rise</h4><p>Prove yourself and we'll help fund your next project.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- LADDER -->
+<section class="ladder pad" id="ladder">
+  <div class="wrap">
+    <div class="sec-label reveal">The growth ladder</div>
+    <h2 class="sec-title reveal">Start where you are. <span class="em">Climb as far as you want.</span></h2>
+    <p class="reveal" style="color:var(--ash);max-width:54ch">Guidance, not rules — you decide your team size and how revenue is shared. Here's what each rung tends to look like.</p>
+    <div class="rungs reveal">
+      <div class="rung" style="--w:8%"><div class="tier">Individual</div><div class="meta">1 — solo</div><div class="rev">$2K–$30K</div></div>
+      <div class="rung" style="--w:16%"><div class="tier">Small</div><div class="meta">3–6 people</div><div class="rev">~$100K</div></div>
+      <div class="rung" style="--w:28%"><div class="tier">Medium</div><div class="meta">6–15 people</div><div class="rev">~$500K</div></div>
+      <div class="rung" style="--w:45%"><div class="tier">Large</div><div class="meta">50–100 people</div><div class="rev">up to $10M</div></div>
+      <div class="rung" style="--w:65%"><div class="tier">Extra Large</div><div class="meta">200–300 people</div><div class="rev">$100M–$200M</div></div>
+      <div class="rung" style="--w:82%"><div class="tier">Platinum</div><div class="meta">~1,000 people</div><div class="rev">$500M+</div></div>
+      <div class="rung" style="--w:100%"><div class="tier">Triple&nbsp;A</div><div class="meta">1,000–3,000</div><div class="rev">$1B+</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BELIEF -->
+<section class="belief pad" id="belief">
+  <div class="wrap">
+    <div class="sec-label reveal" style="text-align:center">What we believe</div>
+    <div class="big reveal">Prosperity <span class="em">wide,</span> not tall.</div>
+    <p class="reveal">A world with ten thousand creators making millions through their own work beats a world with ten billionaires sitting atop armies of underpaid labor.</p>
+    <p class="reveal">That's why we're locked to our mission forever — and why our profits flow back into creative communities worldwide, reviewed openly, every year.</p>
+    <div class="tags reveal">
+      <span class="tag">People over profit</span>
+      <span class="tag">How you earn it matters</span>
+      <span class="tag">Lift as you rise</span>
+      <span class="tag">Mission locked in</span>
+      <span class="tag">Radical transparency</span>
+      <span class="tag">Autonomy non-negotiable</span>
+      <span class="tag">Creativity is the point</span>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final pad" id="join">
+  <div class="wrap">
+    <h2 class="reveal">Make what you love.<br><span class="em">Keep what you earn.</span></h2>
+    <p class="reveal">Forge your own. The path is clear — all that's missing is what you'll build.</p>
+    <div class="reveal" style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+      <a href="#" class="btn btn-primary">Start building →</a>
+      <a href="#manifesto" class="btn btn-ghost">Read the manifesto</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <a href="#top" class="logo">
+      <span class="mark">
+        <svg viewBox="0 0 32 32" fill="none">
+          <rect x="4" y="4" width="9" height="9" fill="#ff5a1f"/>
+          <rect x="14" y="4" width="9" height="9" fill="#f6a623"/>
+          <rect x="14" y="14" width="9" height="9" fill="#ff5a1f"/>
+          <rect x="4" y="14" width="9" height="9" fill="#7a4a2a"/>
+          <rect x="24" y="14" width="4" height="4" fill="#f6a623"/>
+          <rect x="24" y="24" width="4" height="4" fill="#ff5a1f"/>
+        </svg>
+      </span>
+      Forged Pixel
+    </a>
+    <p class="tagfoot">Build for yourself. Rise with everyone.</p>
+    <p>© 2026 Forged Pixel — a doctrine, not just a company.</p>
+  </div>
+</footer>
+
+<script>
+  // ember sparks
+  const sp = document.getElementById('sparks');
+  for(let i=0;i<26;i++){
+    const s=document.createElement('div');
+    s.className='spark';
+    s.style.left=Math.random()*100+'%';
+    s.style.animationDuration=(5+Math.random()*7)+'s';
+    s.style.animationDelay=(Math.random()*8)+'s';
+    const sc=.6+Math.random()*1.6;
+    s.style.transform=`scale(${sc})`;
+    sp.appendChild(s);
+  }
+  // scroll reveal
+  const io=new IntersectionObserver((es)=>{
+    es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})
+  },{threshold:.15});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  // nav bg on scroll
+  const nav=document.getElementById('nav');
+  addEventListener('scroll',()=>{nav.style.background = scrollY>40 ? 'rgba(11,7,5,.92)' : '';});
+</script>
+</body>
+</html>
